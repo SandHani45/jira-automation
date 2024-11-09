@@ -100,15 +100,14 @@ app.post('/webhook', async (req, res) => {
   if (issueType) {
     console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
 
-    // Define the comment content
-    const comment = `Story Created: ${summary}\nDescription: ${description}`;
+  
 
     // Only process if it's a Story
     if (issueType) {
       console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
   
       // Define the comment content
-      const comment = `Story Created: ${summary}\nDescription: ${description}`;
+      const comment = `Story Created: Description:`;
   
       try {
          // Check if the issue exists via API to help debug
