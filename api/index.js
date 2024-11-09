@@ -1,5 +1,5 @@
 const express = require("express");
-const { getIssues, createIssue, getIssue } = require("../controller/jiraService");
+const { getIssues, createIssue, getIssue, commentIssue } = require("../controller/jiraService");
 const bodyParser = require("body-parser");
 const swaggerUi = require('swagger-ui-express');
 const axios = require('axios');
@@ -106,25 +106,10 @@ app.post('/webhook', async (req, res) => {
   try {
      // Check if the issue exists via API to help debug
      console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
-     const issueResponse = await makeJiraRequest(`/rest/api/3/issue/${issueKey}`);
-     console.log('Issue found:', issueResponse);
 
     // Add a comment to the newly created Story using the Jira API
-    const response = await axios.post(
-      `${jiraUrl}/rest/api/3/issue/${issueKey}/comment`,
-      { body: comment },  // Comment body
-      {
-        headers: {
-          Authorization: `Basic ${Buffer.from(
-            `${jiraUsername}:${jiraApiToken}`
-          ).toString("base64")}`,
-          "Content-Type": "application/json",
-        },
-        httpsAgent: new require("https").Agent({
-          rejectUnauthorized: false, // This disables certificate verification
-        }),
-      }
-    );
+    const response = await commentIssue(issueKey, comment)
+    
     console.log(`Comment added successfully to ${issueKey}`, response);
     // Send the response once the comment is successfully added
     return res.status(200).send('Webhook processed and comment added.');

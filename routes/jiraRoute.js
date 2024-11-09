@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { getIssues, createIssue, getIssue } = require("../controller/jiraService");
+const { getIssues, createIssue, getIssue, commentIssue } = require("../controller/jiraService");
 /**
  * @swagger
  * /test:
@@ -96,4 +96,17 @@ router.post("/createIssue", async (req, res) => {
   }
 });
 
+// Route to create a new issue in Jira
+router.post("/commentIssue", async (req, res) => {
+    const { comment, issueKey} = req.body;
+    console.log('--------comment', comment)
+    try {
+      const issue = await commentIssue(issueKey, comment);
+      res.status(201).json(issue);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
+  
 module.exports = router;
