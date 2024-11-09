@@ -118,17 +118,14 @@ const createIssue = async (projectKey, summary, description) => {
 const commentIssue = async (issueKey, comment) => {
   try {
     // Make the API call to add a comment
-    const response = await axios.post(
-      `${jiraUrl}/rest/api/2/issue/${issueKey}/comment`,
+    const response = await makeJiraRequest(
+      `/rest/api/2/issue/${issueKey}/comment`,
+      "POST",
       {
         body: comment, // The body of the comment
       },
-      {
-        auth: auth,
-        headers: { 'Content-Type': 'application/json' },
-      }
     );
-    console.log('Comment added successfully:', response.data);
+    console.log('Comment added successfully:', response);
   } catch (error) {
     console.error('Error adding comment:', error.response ? error.response.data : error.message);
   }
