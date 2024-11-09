@@ -82,10 +82,10 @@ app.post("/webhook", async (req, res) => {
           body: comment
         }, {
           auth: auth,
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
+          // headers: {
+          //   'Accept': 'application/json',
+          //   'Content-Type': 'application/json'
+          // }
         });
         console.log(`Comment added successfully to ${issueKey}`);
         res.status(200).send('Webhook processed and comment added.');
