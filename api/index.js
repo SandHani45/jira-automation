@@ -120,8 +120,15 @@ app.post('/webhook', async (req, res) => {
           `${jiraUrl}/rest/api/3/issue/${issueKey}/comment`,
           { body: comment },  // Comment body
           {
-            auth: auth,
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+              Authorization: `Basic ${Buffer.from(
+                `${jiraUsername}:${jiraApiToken}`
+              ).toString("base64")}`,
+              "Content-Type": "application/json",
+            },
+            httpsAgent: new require("https").Agent({
+              rejectUnauthorized: false, // This disables certificate verification
+            }),
           }
         );
         console.log(`Comment added successfully to ${issueKey}`, response);
