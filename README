@@ -1,0 +1,60 @@
+# Jira Playwright Integration
+
+This repository demonstrates how to integrate **Jira** with **Playwright** and **Node.js** for automating browser tests and managing Jira issues via the API.
+
+## Prerequisites
+
+- A **Jira Cloud** account with a project to link your issues.
+- **Playwright** for Node.js for browser automation.
+- **Axios** for interacting with the Jira REST API.
+
+## Getting Started
+
+### Step 1: Clone the Repository
+
+```bash
+git clone https://github.com/sandhani45/jira-automation.git
+cd jira-automation
+
+
+jira-playwright-integration/
+├── .github/
+│   └── workflows/
+│       └── ci.yml         # GitHub Actions workflow to run tests
+├── node_modules/          # Dependencies installed by npm
+├── .env                   # Environment variables for Jira credentials
+├── test.js                # Playwright test script
+├── package.json           # Node.js project configuration
+├── package-lock.json      # Lock file for dependencies
+└── README.md              # Project documentation
+
+
++-----------------------------+
+|   GitHub Push or PR Trigger |
++-----------------------------+
+            |
+            v
++-----------------------------+
+|  GitHub Actions Workflow    | 
+|   (ci.yml)                  |
++-----------------------------+
+            |
+            v
++-----------------------------+
+|  Install Dependencies       |
++-----------------------------+
+            |
+            v
++-----------------------------+
+|  Run Playwright Tests       |
++-----------------------------+
+            |
+            v
++-----------------------------+
+|  Update Jira with Test Status|
++-----------------------------+
+            |
+            v
++-----------------------------+
+|  Test Result Sent to Jira   |
++-----------------------------+
