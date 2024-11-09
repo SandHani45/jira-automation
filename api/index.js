@@ -69,7 +69,7 @@ app.post('/webhook', async (req, res) => {
   console.log(`Received issue created event for: ${issueKey}`);
 
   // Only process if it's a Story
-  if (issueType === 'Story') {
+  if (issueType) {
     console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
 
     // Define the comment content
