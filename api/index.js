@@ -15,6 +15,19 @@ app.use(express.json());
 // Middleware to parse incoming JSON data
 app.use(bodyParser.json());
 
+// Jira API URL and Authentication details from environment variables
+const jiraUrl = process.env.JIRA_URL;
+const jiraUsername = process.env.JIRA_USERNAME;
+const jiraApiToken = process.env.JIRA_API_TOKEN;
+
+// Basic authentication for Jira API
+const auth = {
+  auth: {
+    username: jiraUsername,
+    password: jiraApiToken,
+  },
+};
+
 // Swagger definition
 const swaggerDefinition = {
     openapi: '3.0.0',
@@ -46,7 +59,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', jiraRoute);
 
 // Endpoint to receive Jira webhook
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   try {
     // Log the incoming webhook payload (the issue data from Jira)
     const issueData = req.body;
@@ -54,18 +67,36 @@ app.post("/webhook", (req, res) => {
     const issue = req.body.issue;
     const issueType = issue.fields.issuetype.name;
     const projectKey = issue.fields.project.key;
-
+    const issueKey = issue.key;
     console.log("Webhook received:", issueType);
+
 
     // Check if the issue is a Story (optional check, depending on your use case)
     if (issueType) {
       const summary = issue.fields.summary;       // Story title
       const description = issue.fields.description; // Story description
+      try {
+        const comment = `Automation comppleted: vist below URL`;
+        // Add a comment to the newly created Story using the Jira API
+        await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+          body: comment
+        }, {
+          auth: auth,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        console.log(`Comment added successfully to ${issueKey}`);
+        res.status(200).send('Webhook processed and comment added.');
+      } catch (error) {
+        console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
+        res.status(500).send('Error processing webhook.');
+      }
 
       // Log or process the extracted information
       console.log('Story Title:', summary);
       console.log('Story Description:', description);
-      console.log('Story issue.fields:', issue.fields);
       // Send a response back to Jira (status 200)
       res.status(200).send('Webhook received');
     } else {
