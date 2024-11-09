@@ -18,6 +18,8 @@ cd jira-automation
 
 Working API: ```https://jira-automation-ebon.vercel.app/api/issues
 
+JIRA LINK: https://sandhanifullstack.atlassian.net/jira/software/c/projects/JP/boards/2
+
 
 jira-playwright-integration/
 ├── .github/
