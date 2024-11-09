@@ -22,9 +22,15 @@ jira-playwright-integration/
 │   └── workflows/
 │       └── ci.yml         # GitHub Actions workflow to run tests
 ├── node_modules/          # Dependencies installed by npm
-├── .env                   # Environment variables for Jira credentials
-├── test.js                # Playwright test script
-├── package.json           # Node.js project configuration
+├── .env
+├── api/
+│   └── index.js 
+├── controller/
+│   └── jiraService.js 
+├── routes/
+│   └── jiraRoute.js          
+├── .env               
+├── package.json           
 ├── package-lock.json      # Lock file for dependencies
 └── README.md              # Project documentation
 
