@@ -51,3 +51,5 @@ app.post('/api/createIssue', async (req, res) => {
 app.listen(port, () => {
   console.log(`Jira API service running on http://localhost:${port}`);
 });
+
+module.exports = app;
