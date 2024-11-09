@@ -16,6 +16,8 @@ This repository demonstrates how to integrate **Jira** with **Playwright** and *
 git clone https://github.com/sandhani45/jira-automation.git
 cd jira-automation
 
+Working API: ```https://jira-automation-ebon.vercel.app/api/issues
+
 
 jira-playwright-integration/
 ├── .github/
