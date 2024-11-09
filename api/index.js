@@ -1,13 +1,9 @@
 const express = require("express");
-const {
-  getIssues,
-  createIssue,
-  getIssue,
-} = require("../controller/jiraService");
+const { getIssues, createIssue, getIssue } = require("../controller/jiraService");
 const bodyParser = require("body-parser");
-const swaggerUi = require("swagger-ui-express");
-const swaggerJsdoc = require("swagger-jsdoc");
-const jiraRoute = require("./../routes/jiraRoute");
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+const jiraRoute = require('./../routes/jiraRoute');
 require("dotenv").config();
 
 const app = express();
@@ -21,63 +17,66 @@ app.use(bodyParser.json());
 
 // Swagger definition
 const swaggerDefinition = {
-  openapi: "3.0.0",
-  info: {
-    title: "My API",
-    version: "1.0.0",
-    description:
-      "This is a simple API documentation example using Swagger and Express.",
-  },
-  servers: [
-    {
-      url: "http://localhost:3000", // URL for the Swagger UI
+    openapi: '3.0.0',
+    info: {
+      title: 'My API',
+      version: '1.0.0',
+      description: 'This is a simple API documentation example using Swagger and Express.',
     },
-  ],
-};
-
-// Options for swagger-jsdoc
+    servers: [
+      {
+        url: 'http://localhost:3000', // URL for the Swagger UI
+      },
+    ],
+  };
+  
+  // Options for swagger-jsdoc
 const options = {
-  swaggerDefinition,
-  apis: ["./routes/*.js"], // Path to the API routes (you will document these later)
-};
+    swaggerDefinition,
+    apis: ['./routes/*.js'], // Path to the API routes (you will document these later)
+  };
 
-// Initialize swagger-jsdoc
+  // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(options);
 
 // Serve Swagger UI
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Import and use routes
-app.use("/api", jiraRoute);
+app.use('/api', jiraRoute);
 
 // Endpoint to receive Jira webhook
 app.post("/webhook", (req, res) => {
   try {
+    // Log the incoming webhook payload (the issue data from Jira)
+    const issueData = req.body;
     // Extract the relevant fields from the payload
     const issue = req.body.issue;
     const issueType = issue.fields.issuetype.name;
     const projectKey = issue.fields.project.key;
+
+    console.log("Webhook received:", issueData);
+
     // Check if the issue is a Story (optional check, depending on your use case)
-    if (issueType === "Story") {
-      const summary = issue.fields.summary; // Story title
+    if (issueType === 'Story') {
+      const summary = issue.fields.summary;       // Story title
       const description = issue.fields.description; // Story description
 
       // Log or process the extracted information
-      console.log("Story Title:", summary);
-      console.log("Story Description:", description);
-
+      console.log('Story Title:', summary);
+      console.log('Story Description:', description);
+      console.log('Story issue.fields:', issue.fields);
       // Send a response back to Jira (status 200)
-      res.status(200).send("Webhook received");
+      res.status(200).send('Webhook received');
     } else {
       // If it's not a Story, respond with a 200 status but no further processing
-      res.status(200).send("Not a Story, ignoring");
+      res.status(200).send('Not a Story, ignoring');
     }
   } catch (error) {
     console.error("Error processing webhook:", error);
     res.status(500).send("Error processing webhook");
   }
 });
-
 app.get("/", (req, res) => {
   res.json({ message: "Hello, world!" });
 });
