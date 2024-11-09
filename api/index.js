@@ -103,35 +103,45 @@ app.post('/webhook', async (req, res) => {
     // Define the comment content
     const comment = `Story Created: ${summary}\nDescription: ${description}`;
 
-    try {
-       // Check if the issue exists via API to help debug
-       console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
-       const issueResponse = await makeJiraRequest(`/rest/api/3/issue/${issueKey}`);
-       console.log('Issue found:', issueResponse.data);
-
-      // Add a comment to the newly created Story using the Jira API
-      await makeJiraRequest(`/rest/api/3/issue/${issueKey}/comment`, {
-        body: comment
-      }, {
-        auth: auth,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log(`Comment added successfully to ${issueKey}`);
-      // Send the response once the comment is successfully added
-      return res.status(200).send('Webhook processed and comment added.');
-    } catch (error) {
-      console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
-      // Send the response once error is caught
-      return res.status(500).send('Error processing webhook.');
+    // Only process if it's a Story
+    if (issueType) {
+      console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
+  
+      // Define the comment content
+      const comment = `Story Created: ${summary}\nDescription: ${description}`;
+  
+      try {
+         // Check if the issue exists via API to help debug
+         console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
+         const issueResponse = await axios.get(`${jiraUrl}/rest/api/3/issue/${issueKey}`, {
+           auth: auth
+         });
+         console.log('Issue found:', issueResponse.data);
+  
+        // Add a comment to the newly created Story using the Jira API
+        await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+          body: comment
+        }, {
+          auth: auth,
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+  
+        console.log(`Comment added successfully to ${issueKey}`);
+        // Send the response once the comment is successfully added
+        return res.status(200).send('Webhook processed and comment added.');
+      } catch (error) {
+        console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
+        // Send the response once error is caught
+        return res.status(500).send('Error processing webhook.');
+      }
+    } else {
+      // If not a Story, we should send a response as well
+      console.log('Not a Story, no comment added.');
+      return res.status(200).send('Not a Story, no comment added.');
     }
-  } else {
-    // If not a Story, we should send a response as well
-    console.log('Not a Story, no comment added.');
-    return res.status(200).send('Not a Story, no comment added.');
   }
 });
 
