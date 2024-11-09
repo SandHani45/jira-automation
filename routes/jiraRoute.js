@@ -30,13 +30,12 @@ router.get("/test", (req, res) => {
 });
 
 // Route to get issues from a Jira project
-router.get("/getIssues", async (req, res) => {
-  const projectKey = "AUTOMATION";
-
+router.get("/issues", async (req, res) => {
+  const projectKey = "JP";
+  console.log('--req',req)
   if (!projectKey) {
     return res.status(400).json({ error: "Project key is required" });
   }
-
   try {
     const issues = await getIssues(projectKey);
     res.status(200).json(issues);
@@ -46,7 +45,7 @@ router.get("/getIssues", async (req, res) => {
 });
 /**
  * @swagger
- * /api/getIssues:
+ * /api/get-issues:
  *   get:
  *     summary: "Get getIssues data"
  *     description: "Returns example data from the API"

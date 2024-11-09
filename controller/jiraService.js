@@ -42,10 +42,10 @@ const makeJiraRequest = async (url, method = "GET", data = null) => {
 };
 
 // Function to fetch issues from a Jira project
-const getIssues = async (projectKey) => {
-  const jql = req.query.jql || 'project = "JP"'; // Default JQL query, replace with your project key
-  const startAt = req.query.startAt || 0;
-  const maxResults = req.query.maxResults || 50;
+const getIssues = async () => {
+  const jql =  'project = "JP"'; // Default JQL query, replace with your project key
+  const startAt =  0;
+  const maxResults = 50;
 
   try {
     const data = await makeJiraRequest(
@@ -65,9 +65,9 @@ const getIssues = async (projectKey) => {
         updated: issueData.fields.updated,
       };
     });
-    res.json(result);
+   return result
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch Jira issues" });
+    return error
   }
 };
 
