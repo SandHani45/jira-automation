@@ -135,6 +135,36 @@ app.post('/webhook', async (req, res) => {
   }
 });
 
+// Endpoint to get Jira issues (stories, tasks, etc.)
+app.get("/jira/issues", async (req, res) => {
+  const jql = req.query.jql || 'project = "JP"'; // Default JQL query, replace with your project key
+  const startAt = req.query.startAt || 0;
+  const maxResults = req.query.maxResults || 50;
+
+  try {
+    const data = await makeJiraRequest(
+      `/rest/api/2/search?jql=${encodeURIComponent(
+        jql
+      )}&startAt=${startAt}&maxResults=${maxResults}`
+    );
+    const result = data.issues?.map((issueData) => {
+      return {
+        jiraId: issueData.key, // The Jira issue key (e.g., "PROJECT-123")
+        summary: issueData.fields.summary,
+        status: issueData.fields.status.name,
+        assignee: issueData.fields.assignee
+          ? issueData.fields.assignee.displayName
+          : null,
+        created: issueData.fields.created,
+        updated: issueData.fields.updated,
+      };
+    });
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch Jira issues" });
+  }
+});
+
 // Endpoint to receive Jira webhook
 // app.post("/webhook", async (req, res) => {
 //   try {

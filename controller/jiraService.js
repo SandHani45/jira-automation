@@ -14,6 +14,33 @@ const auth = {
   },
 };
 
+// Helper function to make requests to Jira
+const makeJiraRequest = async (url, method = "GET", data = null) => {
+  try {
+    const response = await axios({
+      method,
+      url: `${jiraUrl}${url}`,
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${jiraUsername}:${jiraApiToken}`
+        ).toString("base64")}`,
+        "Content-Type": "application/json",
+      },
+      httpsAgent: new require("https").Agent({
+        rejectUnauthorized: false, // This disables certificate verification
+      }),
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error interacting with Jira:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 // Function to fetch issues from a Jira project
 const getIssues = async (projectKey) => {
   const url = `${jiraUrl}/rest/api/3/search`;
