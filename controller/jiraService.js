@@ -43,33 +43,31 @@ const makeJiraRequest = async (url, method = "GET", data = null) => {
 
 // Function to fetch issues from a Jira project
 const getIssues = async (projectKey) => {
-  const url = `${jiraUrl}/rest/api/3/search`;
-  // JQL query to fetch tasks from the given project key
-  const jql = `project = "${projectKey}" AND issuetype = Task ORDER BY created DESC`;
-  const params = {
-    jql: jql,
-    fields: 'summary', 
-    maxResults: 10, // Number of issues to fetch
-  };
+  const jql = req.query.jql || 'project = "JP"'; // Default JQL query, replace with your project key
+  const startAt = req.query.startAt || 0;
+  const maxResults = req.query.maxResults || 50;
 
   try {
-    const response = await axios.get(url, {
-      params,
-      auth,
-      headers: {
-        'Accept': 'application/json',
-      },
+    const data = await makeJiraRequest(
+      `/rest/api/2/search?jql=${encodeURIComponent(
+        jql
+      )}&startAt=${startAt}&maxResults=${maxResults}`
+    );
+    const result = data.issues?.map((issueData) => {
+      return {
+        jiraId: issueData.key, // The Jira issue key (e.g., "PROJECT-123")
+        summary: issueData.fields.summary,
+        status: issueData.fields.status.name,
+        assignee: issueData.fields.assignee
+          ? issueData.fields.assignee.displayName
+          : null,
+        created: issueData.fields.created,
+        updated: issueData.fields.updated,
+      };
     });
-       // Extract the issues from the response
-       const issues = response.data.issues;
-        // Return a list of issue titles (summaries)
-    return issues.map(issue => ({
-      id: issue.id,
-      key: issue.key,
-      summary: issue.fields.summary,  // Story title (summary)
-    }));
+    res.json(result);
   } catch (error) {
-    throw new Error(`Error fetching issues from Jira: ${error.response?.data || error.message}`);
+    res.status(500).json({ error: "Failed to fetch Jira issues" });
   }
 };
 
