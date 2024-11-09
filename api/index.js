@@ -58,56 +58,99 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Import and use routes
 app.use('/api', jiraRoute);
 
-// Endpoint to receive Jira webhook
-app.post("/webhook", async (req, res) => {
-  try {
-    // Log the incoming webhook payload (the issue data from Jira)
-    const issueData = req.body;
-    // Extract the relevant fields from the payload
-    const issue = req.body.issue;
-    const issueType = issue.fields.issuetype.name;
-    const projectKey = issue.fields.project.key;
-    const issueKey = issue.key;
-    console.log("Webhook received:", issueType);
+// Webhook endpoint to receive Jira notifications
+app.post('/webhook', async (req, res) => {
+  const issue = req.body.issue;
+  const issueType = issue.fields.issuetype.name;
+  const issueKey = issue.key;
+  const summary = issue.fields.summary;
+  const description = issue.fields.description;
 
+  console.log(`Received issue created event for: ${issueKey}`);
 
-    // Check if the issue is a Story (optional check, depending on your use case)
-    if (issueType) {
-      const summary = issue.fields.summary;       // Story title
-      const description = issue.fields.description; // Story description
-      try {
-        const comment = `Automation comppleted: vist below URL`;
-        // Add a comment to the newly created Story using the Jira API
-        await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
-          body: comment
-        }, {
-          auth: auth,
-          // headers: {
-          //   'Accept': 'application/json',
-          //   'Content-Type': 'application/json'
-          // }
-        });
-        console.log(`Comment added successfully to ${issueKey}`);
-        res.status(200).send('Webhook processed and comment added.');
-      } catch (error) {
-        console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
-        res.status(500).send('Error processing webhook.');
-      }
+  // Only process if it's a Story
+  if (issueType === 'Story') {
+    console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
 
-      // Log or process the extracted information
-      console.log('Story Title:', summary);
-      console.log('Story Description:', description);
-      // Send a response back to Jira (status 200)
-      res.status(200).send('Webhook received');
-    } else {
-      // If it's not a Story, respond with a 200 status but no further processing
-      res.status(200).send('Not a Story, ignoring');
+    // Define the comment content
+    const comment = `Story Created: ${summary}\nDescription: ${description}`;
+
+    try {
+      // Add a comment to the newly created Story using the Jira API
+      await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+        body: comment
+      }, {
+        auth: auth,
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log(`Comment added successfully to ${issueKey}`);
+      // Send the response once the comment is successfully added
+      return res.status(200).send('Webhook processed and comment added.');
+    } catch (error) {
+      console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
+      // Send the response once error is caught
+      return res.status(500).send('Error processing webhook.');
     }
-  } catch (error) {
-    console.error("Error processing webhook:", error);
-    res.status(500).send("Error processing webhook");
+  } else {
+    // If not a Story, we should send a response as well
+    console.log('Not a Story, no comment added.');
+    return res.status(200).send('Not a Story, no comment added.');
   }
 });
+
+// Endpoint to receive Jira webhook
+// app.post("/webhook", async (req, res) => {
+//   try {
+//     // Log the incoming webhook payload (the issue data from Jira)
+//     const issueData = req.body;
+//     // Extract the relevant fields from the payload
+//     const issue = req.body.issue;
+//     const issueType = issue.fields.issuetype.name;
+//     const projectKey = issue.fields.project.key;
+//     const issueKey = issue.key;
+//     console.log("Webhook received:", issueType);
+
+//     // Check if the issue is a Story (optional check, depending on your use case)
+//     if (issueType) {
+//       const summary = issue.fields.summary;       // Story title
+//       const description = issue.fields.description; // Story description
+//       try {
+//         const comment = `Automation comppleted: vist below URL`;
+//         // Add a comment to the newly created Story using the Jira API
+//         await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+//           body: comment
+//         }, {
+//           auth: auth,
+//           // headers: {
+//           //   'Accept': 'application/json',
+//           //   'Content-Type': 'application/json'
+//           // }
+//         });
+//         console.log(`Comment added successfully to ${issueKey}`);
+//         res.status(200).send('Webhook processed and comment added.');
+//       } catch (error) {
+//         console.error(`Error adding comment to ${issueKey}:`, error.response ? error.response.data : error.message);
+//         res.status(500).send('Error processing webhook.');
+//       }
+
+//       // Log or process the extracted information
+//       console.log('Story Title:', summary);
+//       console.log('Story Description:', description);
+//       // Send a response back to Jira (status 200)
+//       res.status(200).send('Webhook received');
+//     } else {
+//       // If it's not a Story, respond with a 200 status but no further processing
+//       res.status(200).send('Not a Story, ignoring');
+//     }
+//   } catch (error) {
+//     console.error("Error processing webhook:", error);
+//     res.status(500).send("Error processing webhook");
+//   }
+// });
 app.get("/", (req, res) => {
   res.json({ message: "Hello, world!" });
 });
