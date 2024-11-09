@@ -8,6 +8,10 @@ const port = process.env.PORT || 3000;
 // Middleware to parse JSON bodies
 app.use(express.json());
 
+app.get('/', (req, res) => {
+    res.json({ message: 'Hello, world!' });
+  });
+  
 // Route to get issues from a Jira project
 app.get('/api/getIssues', async (req, res) => {
   const { projectKey } = req.query || 'AUTOMATION';
