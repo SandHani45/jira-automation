@@ -66,7 +66,7 @@ app.post('/webhook', async (req, res) => {
   const issueKey = issue.key;
   const summary = issue.fields.summary;
   const description = issue.fields.description;
-
+  console.log('-----------auth', auth)
   console.log(`Received issue created event for: ${issueKey}`);
 
   // Only process if it's a Story
