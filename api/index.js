@@ -1,5 +1,5 @@
 const express = require('express');
-const { getIssues, createIssue } = require('./api/jiraService');
+const { getIssues, createIssue } = require('./jiraService');
 require('dotenv').config();
 
 const app = express();
@@ -10,6 +10,9 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.json({ message: 'Hello, world!' });
+  });
+  app.get('/api/test', (req, res) => {
+    res.json({ message: 'Test endpoint working!' });
   });
   
 // Route to get issues from a Jira project
