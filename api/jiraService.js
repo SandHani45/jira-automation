@@ -20,12 +20,30 @@ const getIssues = async (projectKey) => {
   const jql = `project="${projectKey}"`; // JQL query to filter issues by project key
   const params = {
     jql: jql,
+    // fields: 'summary,status,assignee', // You can specify more fields here
+    maxResults: 10, // Number of issues to fetch
+  };
+
+  try {
+    const response = await axios.get(url, { ...auth });
+    return response.data; // Return the list of issues
+  } catch (error) {
+    throw new Error(`Error fetching issues from Jira: ${error.response?.data || error.message}`);
+  }
+};
+
+// Function to fetch issues from a Jira project
+const getIssue = async (projectKey, issueKey) => {
+  const url = `${jiraUrl}/rest/api/2/issue/${issueKey}`;
+  const jql = `project="${projectKey}"`; // JQL query to filter issues by project key
+  const params = {
+    jql: jql,
     fields: 'summary,status,assignee', // You can specify more fields here
     maxResults: 10, // Number of issues to fetch
   };
 
   try {
-    const response = await axios.get(url, { ...auth, params });
+    const response = await axios.get(url, params, { ...auth });
     return response.data; // Return the list of issues
   } catch (error) {
     throw new Error(`Error fetching issues from Jira: ${error.response?.data || error.message}`);
@@ -56,4 +74,4 @@ const createIssue = async (projectKey, summary, description) => {
   }
 };
 
-module.exports = { getIssues, createIssue };
+module.exports = { getIssues, createIssue, getIssue };
