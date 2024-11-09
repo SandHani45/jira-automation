@@ -117,7 +117,7 @@ app.post('/webhook', async (req, res) => {
   
         // Add a comment to the newly created Story using the Jira API
         await makeJiraRequest(`/rest/api/3/issue/${issueKey}/comment`, "POST", {
-          comment
+          comment: comment
         });
   
         console.log(`Comment added successfully to ${issueKey}`);
