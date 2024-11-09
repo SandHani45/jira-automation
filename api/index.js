@@ -59,6 +59,33 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 // Import and use routes
 app.use('/api', jiraRoute);
 
+// Helper function to make requests to Jira
+const makeJiraRequest = async (url, method = "GET", data = null) => {
+  try {
+    const response = await axios({
+      method,
+      url: `${jiraUrl}${url}`,
+      headers: {
+        Authorization: `Basic ${Buffer.from(
+          `${jiraUsername}:${jiraApiToken}`
+        ).toString("base64")}`,
+        "Content-Type": "application/json",
+      },
+      httpsAgent: new require("https").Agent({
+        rejectUnauthorized: false, // This disables certificate verification
+      }),
+      data,
+    });
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Error interacting with Jira:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 // Webhook endpoint to receive Jira notifications
 app.post('/webhook', async (req, res) => {
   const issue = req.body.issue;
@@ -79,13 +106,11 @@ app.post('/webhook', async (req, res) => {
     try {
        // Check if the issue exists via API to help debug
        console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
-       const issueResponse = await axios.get(`${jiraUrl}/rest/api/3/issue/${issueKey}`, {
-         auth: auth
-       });
+       const issueResponse = await makeJiraRequest(`/rest/api/3/issue/${issueKey}`);
        console.log('Issue found:', issueResponse.data);
 
       // Add a comment to the newly created Story using the Jira API
-      await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+      await makeJiraRequest(`/rest/api/3/issue/${issueKey}/comment`, {
         body: comment
       }, {
         auth: auth,
