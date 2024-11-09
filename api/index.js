@@ -113,20 +113,12 @@ app.post('/webhook', async (req, res) => {
       try {
          // Check if the issue exists via API to help debug
          console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
-         const issueResponse = await axios.get(`${jiraUrl}/rest/api/3/issue/${issueKey}`, {
-           auth: auth
-         });
+         const issueResponse = await makeJiraRequest(`/rest/api/3/issue/${issueKey}`);
          console.log('Issue found:', issueResponse.data);
   
         // Add a comment to the newly created Story using the Jira API
-        await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
+        await makeJiraRequest(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, "POST", {
           body: comment
-        }, {
-          auth: auth,
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          }
         });
   
         console.log(`Comment added successfully to ${issueKey}`);
@@ -152,6 +144,8 @@ app.get("/jira/issues", async (req, res) => {
   const maxResults = req.query.maxResults || 50;
 
   try {
+    const issueResponse = await makeJiraRequest(`/rest/api/3/issue/JP-3`);
+    console.log('-----------issueResponse', issueResponse)
     const data = await makeJiraRequest(
       `/rest/api/2/search?jql=${encodeURIComponent(
         jql
