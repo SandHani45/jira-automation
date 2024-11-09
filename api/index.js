@@ -77,6 +77,13 @@ app.post('/webhook', async (req, res) => {
     const comment = `Story Created: ${summary}\nDescription: ${description}`;
 
     try {
+       // Check if the issue exists via API to help debug
+       console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
+       const issueResponse = await axios.get(`${jiraUrl}/rest/api/3/issue/${issueKey}`, {
+         auth: auth
+       });
+       console.log('Issue found:', issueResponse.data);
+
       // Add a comment to the newly created Story using the Jira API
       await axios.post(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, {
         body: comment
