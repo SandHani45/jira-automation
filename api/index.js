@@ -55,7 +55,7 @@ app.post("/webhook", (req, res) => {
     const issueType = issue.fields.issuetype.name;
     const projectKey = issue.fields.project.key;
 
-    console.log("Webhook received:", issueData);
+    console.log("Webhook received:", issueType);
 
     // Check if the issue is a Story (optional check, depending on your use case)
     if (issueType) {
