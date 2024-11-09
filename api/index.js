@@ -114,7 +114,7 @@ app.post('/webhook', async (req, res) => {
          // Check if the issue exists via API to help debug
          console.log(`Checking if issue exists: ${jiraUrl}/rest/api/3/issue/${issueKey}`);
          const issueResponse = await makeJiraRequest(`/rest/api/3/issue/${issueKey}`);
-         console.log('Issue found:', issueResponse.data);
+         console.log('Issue found:', issueResponse);
   
         // Add a comment to the newly created Story using the Jira API
         await makeJiraRequest(`${jiraUrl}/rest/api/3/issue/${issueKey}/comment`, "POST", {
