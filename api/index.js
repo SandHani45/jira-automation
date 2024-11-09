@@ -2,6 +2,7 @@ const express = require("express");
 const { getIssues, createIssue, getIssue } = require("../controller/jiraService");
 const bodyParser = require("body-parser");
 const swaggerUi = require('swagger-ui-express');
+const axios = require('axios');
 const swaggerJsdoc = require('swagger-jsdoc');
 const jiraRoute = require('./../routes/jiraRoute');
 require("dotenv").config();
