@@ -58,7 +58,7 @@ app.post("/webhook", (req, res) => {
     console.log("Webhook received:", issueData);
 
     // Check if the issue is a Story (optional check, depending on your use case)
-    if (issueType === 'Story') {
+    if (issueType) {
       const summary = issue.fields.summary;       // Story title
       const description = issue.fields.description; // Story description
 
