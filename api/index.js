@@ -116,11 +116,15 @@ app.post('/webhook', async (req, res) => {
          console.log('Issue found:', issueResponse);
   
         // Add a comment to the newly created Story using the Jira API
-        await makeJiraRequest(`/rest/api/3/issue/${issueKey}/comment`, "POST", {
-          comment: comment
-        });
-  
-        console.log(`Comment added successfully to ${issueKey}`);
+        const response = await axios.post(
+          `${jiraUrl}/rest/api/3/issue/${issueKey}/comment`,
+          { body: comment },  // Comment body
+          {
+            auth: auth,
+            headers: { 'Content-Type': 'application/json' }
+          }
+        );
+        console.log(`Comment added successfully to ${issueKey}`, response);
         // Send the response once the comment is successfully added
         return res.status(200).send('Webhook processed and comment added.');
       } catch (error) {
