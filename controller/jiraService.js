@@ -126,6 +126,7 @@ const commentIssue = async (issueKey, comment) => {
       },
     );
     console.log('Comment added successfully:', response);
+    return response
   } catch (error) {
     console.error('Error adding comment:', error.response ? error.response.data : error.message);
   }
