@@ -209,7 +209,7 @@ app.get("/jira/issues", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ message: "Hello, world!" });
 });
-
+// test
 // Start the server
 app.listen(port, () => {
   console.log(`Jira API service running on http://localhost:${port}`);
