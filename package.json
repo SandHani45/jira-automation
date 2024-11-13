@@ -16,6 +16,23 @@
     "express": "^4.21.1",
     "nodemon": "^3.1.7",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "@langchain/core": "^0.3.7",
+    "@langchain/langgraph": "^0.2.12",
+    "@langchain/openai": "^0.3.5",
+    "compute-cosine-similarity": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "fs": "^0.0.1-security",
+    "https-proxy-agent": "^7.0.5",
+    "langchain": "0.0.169",
+    "ml-pca": "^4.1.1",
+    "openai": "^3.2.1",
+    "pdf-lib": "^1.17.1",
+    "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.15.1",
+    "pdfreader": "^3.0.5"
+  },
+   "devDependencies": {
+    "@types/pdfkit": "^0.13.5"
   }
 }
