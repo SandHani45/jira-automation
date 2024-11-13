@@ -101,7 +101,7 @@ app.post('/webhook', async (req, res) => {
   console.log(`This is a Story. Proceeding to add a comment to ${issueKey}`);
 
   // Define the comment content
-  const comment = 'This is a valid comment with special characters like "quotes" and newlines\nCheck it out!';
+  const comment = 'your code updated in dashabord please visit: localhost:300';
 
   try {
      // Check if the issue exists via API to help debug
@@ -209,7 +209,7 @@ app.get("/jira/issues", async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ message: "Hello, world!" });
 });
-// test
+
 // Start the server
 app.listen(port, () => {
   console.log(`Jira API service running on http://localhost:${port}`);
