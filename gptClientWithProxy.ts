@@ -5,7 +5,8 @@ import { ChatOpenAI } from "langchain/chat_models/openai";
 import { OpenAIEmbeddings } from "langchain/embeddings/openai";
 
 const { API_VERSION, PROXY_API_KEY, MODEL, EMBEDDINGS_MODEL } = process.env;
-const proxyUrl = "https://openaiproxy.clouddev.emiratesnbd.com";
+// const proxyUrl = "https://openaiproxy.clouddev.emiratesnbd.com";
+const proxyUrl = "https://api.openai.com/v1"
 
 const SYSTEM = "system";
 const USER = "user";
