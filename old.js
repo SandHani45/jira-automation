@@ -183,3 +183,68 @@ app.post('/updateTag', async (req, res) => {
 server.listen(port, () => {
   console.log(`cucumber server running in http://localhost:${port}`);
 });
+
+
+
+
+  //   fetch("http://localhost:3007/run-cucumber", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       tag: tagName,
+  //     }),
+  //   })
+  //     .then((res) => {
+  //       const reader = res.body.getReader();
+  //       const decoder = new TextDecoder("utf-8");
+  //       return reader.read().then(function processtext({ done, value }) {
+  //         if (done) {
+  //           setLoading(false);
+  //           return;
+  //         }
+  //         const chunk = decoder.decode(value, { stream: true });
+  //         if (chunk === "closed") {
+  //           setLoading(false);
+  //           return;
+  //         }
+  //         setLogs((prevLogs) => prevLogs + chunk);
+  //         return reader.read().then(processtext);
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setLogs("error", error);
+  //     });
+  // };
+
+  // const getReport = () => {
+  //   fetch("http://localhost:3007/get-report", {
+  //     method: "GET",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   })
+  //     .then((res) => {
+  //       const reader = res.body.getReader();
+  //       const decoder = new TextDecoder("utf-8");
+  //       return reader.read().then(function processtext({ done, value }) {
+  //         if (done) {
+  //           setLoading(false);
+  //           return;
+  //         }
+  //         const chunk = decoder.decode(value, { stream: true });
+  //         if (chunk === "closed") {
+  //           setLoading(false);
+  //           return;
+  //         }
+  //         setLogs((prevLogs) => prevLogs + chunk);
+  //         return reader.read().then(processtext);
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setLogs("error", error);
+  //     });
+  // };
